@@ -4,7 +4,7 @@
 var React = require( 'react' ),
 	debug = require( 'debug' )( 'calypso:post-editor:media' );
 import { connect } from 'react-redux';
-import { noop, head, some, findIndex, partial, values, map } from 'lodash';
+import { noop, head, some, findIndex, partial, values, map, includes } from 'lodash';
 
 /**
  * Internal dependencies
@@ -25,6 +25,7 @@ import { setEditorMediaModalView } from 'state/ui/editor/actions';
 import { ModalViews } from 'state/ui/media-modal/constants';
 import { deleteMedia } from 'state/media/actions';
 import ImageEditor from 'blocks/image-editor';
+import VideoEditor from 'blocks/video-editor';
 import MediaModalDetail from './detail';
 
 export const EditorMediaModal = React.createClass( {
@@ -57,6 +58,7 @@ export const EditorMediaModal = React.createClass( {
 			resetView: noop,
 			view: ModalViews.LIST,
 			imageEditorProps: {},
+			videoEditorProps: {},
 			deleteMedia: () => {}
 		};
 	},
@@ -316,7 +318,7 @@ export const EditorMediaModal = React.createClass( {
 			selectedItems = this.props.mediaLibrarySelectedItems,
 			buttons;
 
-		if ( ModalViews.IMAGE_EDITOR === this.props.view ) {
+		if ( includes( [ ModalViews.IMAGE_EDITOR, ModalViews.VIDEO_EDITOR ], this.props.view ) ) {
 			return;
 		}
 
@@ -355,7 +357,7 @@ export const EditorMediaModal = React.createClass( {
 	},
 
 	shouldClose: function() {
-		return ( ModalViews.IMAGE_EDITOR !== this.props.view );
+		return ! includes( [ ModalViews.IMAGE_EDITOR, ModalViews.VIDEO_EDITOR ], this.props.view );
 	},
 
 	renderContent: function() {
@@ -384,24 +386,37 @@ export const EditorMediaModal = React.createClass( {
 				break;
 
 			case ModalViews.IMAGE_EDITOR:
+			case ModalViews.VIDEO_EDITOR:
 				const {
 					site,
 					imageEditorProps,
-					mediaLibrarySelectedItems: items
+					videoEditorProps,
+					mediaLibrarySelectedItems: items,
 				} = this.props;
 
 				const selectedIndex = this.getDetailSelectedIndex();
 				const media = items ? items[ selectedIndex ] : null;
 
-				content = (
-					<ImageEditor
-						siteId={ site && site.ID }
-						media={ media }
-						onDone={ this.onImageEditorDone }
-						onCancel={ this.onImageEditorCancel }
-						{ ...imageEditorProps }
-					/>
-				);
+				if ( ModalViews.IMAGE_EDITOR === this.props.view ) {
+					content = (
+						<ImageEditor
+							siteId={ site && site.ID }
+							media={ media }
+							onDone={ this.onImageEditorDone }
+							onCancel={ this.onImageEditorCancel }
+							{ ...imageEditorProps }
+						/>
+					);
+				} else {
+					content = (
+						<VideoEditor
+							siteId={ site && site.ID }
+							media={ media }
+							{ ...videoEditorProps }
+						/>
+					);
+				}
+
 				break;
 
 			default:
