@@ -11,7 +11,6 @@ import GridIcon from 'gridicons';
  */
 import {
 	first,
-	any,
 	when
 } from './functional';
 import { connectChat } from 'state/happychat/actions';
@@ -35,8 +34,6 @@ import {
 	composer
 } from './helpers';
 import { translate } from 'i18n-calypso';
-
-const isChatOpen = any( isConnected, isConnecting );
 
 /**
  * Renders the title text of the chat sidebar when happychat is connecting.
@@ -106,7 +103,7 @@ class Happychat extends Component {
 			<div className="happychat">
 				<div
 					className={ classnames( 'happychat__container', {
-						'is-open': isChatOpen( { connectionStatus } ),
+						'is-open': true,
 						'is-minimizing': isMinimizing
 					} ) } >
 					<div className="happychat__title">
