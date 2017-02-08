@@ -396,3 +396,19 @@
 .site-settings__taxonomies {
 	margin-bottom: 17px;
 }
+
+.site-settings__date-time-format {
+	margin-top: -16px;
+
+	.site-settings__date-time-format-title {
+		color: $gray-dark;
+		font-size: 16px;
+		line-height: 24px;
+		padding-bottom: 10px;
+	}
+	.site-settings__date-time-format-info {
+		color: $gray;
+		font-size: 13px;
+		font-style: italic;
+	}
+}
