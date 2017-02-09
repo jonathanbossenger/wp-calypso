@@ -14,9 +14,49 @@ import {
 /**
  * Internal dependencies
  */
-import { http } from '../actions';
+import {
+	apiVersionRegex,
+	apiNamespaceRegex,
+	http
+} from '../actions';
 
 describe( 'http', () => {
+	describe( 'apiVersion shape', () => {
+		it.only( 'should not accept `1` as a valid version value', () => {
+			expect( apiVersionRegex.test( '1' ) ).to.be.false;
+		} );
+
+		it.only( 'should accept `v1` as a valid version value', () => {
+			expect( apiVersionRegex.test( 'v1' ) ).to.be.true;
+		} );
+
+		it.only( 'should not accept `v1.` as a valid version value', () => {
+			expect( apiVersionRegex.test( 'v1.' ) ).to.be.false;
+		} );
+
+		it.only( 'should accept `v1.3` as a valid version value', () => {
+			expect( apiVersionRegex.test( 'v1.3' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'apiNamespace shape', () => {
+		it.only( 'should not accept `wpcom` as a valid version value', () => {
+			expect( apiNamespaceRegex.test( 'wpcom' ) ).to.be.false;
+		} );
+
+		it.only( 'should accept `wpcom/v1` as a valid version value', () => {
+			expect( apiNamespaceRegex.test( 'wpcom/v1' ) ).to.be.true;
+		} );
+
+		it.only( 'should not accept `wpcom/` as a valid version value', () => {
+			expect( apiNamespaceRegex.test( 'wpcom/' ) ).to.be.false;
+		} );
+
+		it.only( 'should not accept `wpcom/1` as a valid version value', () => {
+			expect( apiNamespaceRegex.test( 'wpcom/1' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'request action', () => {
 		it( 'should return a valid redux action defining apiVersion', () => {
 			const action = http( {
