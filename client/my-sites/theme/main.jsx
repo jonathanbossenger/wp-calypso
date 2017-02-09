@@ -571,9 +571,11 @@ const ThemeSheetWithOptions = ( props ) => {
 	const siteId = site ? site.ID : null;
 
 	let defaultOption;
+	let secondaryOption = 'tryandcustomize';
 
 	if ( ! isLoggedIn ) {
 		defaultOption = 'signup';
+		secondaryOption = null;
 	} else if ( isActive ) {
 		defaultOption = 'customize';
 	} else if ( isPremium && ! isPurchased ) {
@@ -595,7 +597,7 @@ const ThemeSheetWithOptions = ( props ) => {
 				previewAction
 			] }
 			defaultOption={ defaultOption }
-			secondaryOption={ 'tryandcustomize' }
+			secondaryOption={ secondaryOption }
 			source="showcase-sheet" />
 	);
 };
