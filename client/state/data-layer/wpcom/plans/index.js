@@ -3,7 +3,10 @@
  */
 import { http } from 'state/data-layer/wpcom-http/actions';
 import { dispatchRequest } from 'state/data-layer/wpcom-http/utils';
-import { PLANS_REQUEST } from 'state/action-types';
+import {
+	WPCOM_HTTP_BAD_REQUEST,
+	PLANS_REQUEST,
+} from 'state/action-types';
 import {
 	plansReceiveAction,
 	plansRequestFailureAction,
@@ -23,15 +26,19 @@ import {
  * @returns {Object} original action
  */
 export const requestPlans = ( { dispatch }, action, next ) => {
-	dispatch( http( {
+	const httpAction = http( {
 		apiVersion: '1.4',
 		method: 'GET',
 		path: '/plans',
 		onSuccess: action,
 		onFailure: action,
-	} ) );
+	} );
 
-	return next( action );
+	dispatch( httpAction );
+
+	if ( httpAction.type !== WPCOM_HTTP_BAD_REQUEST ) {
+		next( action );
+	}
 };
 
 /**
