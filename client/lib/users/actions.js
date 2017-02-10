@@ -144,10 +144,10 @@ const UsersActions = {
 			if ( error ) {
 				Dispatcher.handleServerAction( {
 					type: 'RECEIVE_USER_FAILED',
-					fetchOptions: fetchOptions,
 					siteId: fetchOptions.siteId,
-					userId: userId,
-					error: error
+					fetchOptions,
+					userId,
+					error
 				} );
 			} else {
 				Dispatcher.handleServerAction( {
@@ -157,8 +157,34 @@ const UsersActions = {
 				} );
 			}
 		} );
-	}
+	},
 
+	fetchUserByLogin: ( fetchOptions, login ) => {
+		debug( 'fetchUserByLogin', fetchOptions );
+
+		Dispatcher.handleViewAction( {
+			type: 'FETCHING_USERS',
+			fetchOptions: fetchOptions
+		} );
+
+		wpcom.undocumented().site( fetchOptions.siteId ).getUserByLogin( login, ( error, data ) => {
+			if ( error ) {
+				Dispatcher.handleServerAction( {
+					type: 'RECEIVE_USER_FAILED',
+					siteId: fetchOptions.siteId,
+					fetchOptions,
+					login,
+					error
+				} );
+			} else {
+				Dispatcher.handleServerAction( {
+					type: 'RECEIVE_SINGLE_USER',
+					fetchOptions,
+					user: data
+				} );
+			}
+		} );
+	}
 };
 
 module.exports = UsersActions;
