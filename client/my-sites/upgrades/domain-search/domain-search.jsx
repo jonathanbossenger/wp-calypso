@@ -24,6 +24,7 @@ var observe = require( 'lib/mixins/data-observe' ),
 	shouldFetchSitePlans = require( 'lib/plans' ).shouldFetchSitePlans;
 import { getPlansBySite } from 'state/sites/plans/selectors';
 import { currentUserHasFlag } from 'state/current-user/selectors';
+import { isSiteUpgradeable } from 'state/sites/selectors';
 
 var DomainSearch = React.createClass( {
 	mixins: [ observe( 'productsList', 'sites' ), analyticsMixin( 'registerDomain' ) ],
@@ -66,7 +67,7 @@ var DomainSearch = React.createClass( {
 	checkSiteIsUpgradeable: function() {
 		var selectedSite = this.props.sites.getSelectedSite();
 
-		if ( selectedSite && ! selectedSite.isUpgradeable() ) {
+		if ( selectedSite && ! this.props.isSiteUpgradeable ) {
 			page.redirect( '/domains/add' );
 		}
 	},
@@ -165,9 +166,12 @@ var DomainSearch = React.createClass( {
 
 module.exports = connect(
 	function( state, props ) {
+		const selectedSite = props.sites.getSelectedSite();
+
 		return {
-			sitePlans: getPlansBySite( state, props.sites.getSelectedSite() ),
-			domainsWithPlansOnly: currentUserHasFlag( state, DOMAINS_WITH_PLANS_ONLY )
+			sitePlans: getPlansBySite( state, selectedSite ),
+			domainsWithPlansOnly: currentUserHasFlag( state, DOMAINS_WITH_PLANS_ONLY ),
+			isSiteUpgradeable: isSiteUpgradeable( state, selectedSite && selectedSite.ID )
 		};
 	},
 	function( dispatch ) {
