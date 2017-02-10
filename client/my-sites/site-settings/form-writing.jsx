@@ -174,8 +174,10 @@ const getFormSettings = partialRight( pick, [
 	'wp_mobile_featured_images',
 	'wp_mobile_app_promos',
 	'post_by_email_address',
-	'carousel_display_exif',
-	'carousel_background_color'
+	'photon',
+	'carousel',
+	'carousel_background_color',
+	'carousel_display_exif'
 ] );
 
 export default flowRight(

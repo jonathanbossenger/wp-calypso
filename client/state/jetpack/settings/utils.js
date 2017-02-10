@@ -80,6 +80,10 @@ export const filterSettingsByActiveModules = ( settings ) => {
 			'jetpack_testimonial',
 			'jetpack_portfolio',
 		],
+		carousel: [
+			'carousel_background_color',
+			'carousel_display_exif'
+		]
 	};
 	let filteredSettings = { ...settings };
 
