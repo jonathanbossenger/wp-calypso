@@ -65,8 +65,7 @@ const log = debug( 'calypso:state:reducers' );
 /**
  * Module variables
  */
-
-let reducers = {
+const initialReducers = {
 	application,
 	accountRecovery,
 	automatedTransfer,
@@ -117,12 +116,22 @@ let reducers = {
 	wordads,
 };
 
-export function addReducer( name, reducer ) {
+let reducers = { ...initialReducers };
+let onChange = null;
+
+// TODO: See if this export can be eliminated.
+export let reducer = combineReducers( reducers );
+
+export function addReducer( name, reducerFunc ) {
 	if ( reducerExists( name ) ) {
 		throw new Error( 'addReducer(): name "' + name + '" already in use' );
 	}
 
-	reducers = { ...reducers, [ name ]: reducer };
+	reducers = { ...reducers, [ name ]: reducerFunc };
+
+	if ( onChange ) {
+		onChange();
+	}
 }
 
 export function removeReducer( name ) {
@@ -139,10 +148,6 @@ export function removeReducer( name ) {
 export function reducerExists( name ) {
 	return ( reducers[ name ] !== undefined );
 }
-
-// TODO: See if this export can be eliminated.
-// We probably shouldn't be accessing the reducers directly like this.
-export const reducer = combineReducers( reducers );
 
 export function createReduxStore( initialState = {} ) {
 	const isBrowser = typeof window === 'object';
@@ -161,6 +166,13 @@ export function createReduxStore( initialState = {} ) {
 		isBrowser && window.devToolsExtension && window.devToolsExtension()
 	].filter( Boolean );
 
-	return compose( ...enhancers )( createStore )( reducer, initialState );
+	const store = compose( ...enhancers )( createStore )( reducer, initialState );
+
+	onChange = () => {
+		reducer = combineReducers( reducers );
+		store.replaceReducer( reducer );
+	};
+
+	return store;
 }
 
