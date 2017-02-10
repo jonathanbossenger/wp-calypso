@@ -407,8 +407,7 @@ SitesList.prototype.getSite = function( siteID ) {
 		return site.ID === siteID ||
 			site.slug === siteID ||
 			site.domain === siteID ||
-			site.wpcom_url === siteID ||
-			( site.options.is_domain_only && site.name === siteID );
+			site.wpcom_url === siteID;
 	} );
 };
 
